@@ -1,0 +1,21 @@
+# Server dependencies with deterministic versioning - May 2025
+fastapi==0.115.12  # Latest high-performance framework
+uvicorn==0.30.0  # Latest ASGI server with optimal performance
+httpx==0.27.0  # Latest async HTTP client
+sse-starlette==1.8.2  # Server-Sent Events for FastAPI/Starlette
+python-dotenv==1.0.1  # Environment variable handling
+anyio==4.9.0  # High-performance async I/O abstraction
+orjson==3.10.18  # Ultra-fast JSON serialization/deserialization
+
+# Type checking with unwavering precision
+mypy==1.15.0  # Static type checking for deterministic execution
+
+# Process management with strategic control
+psutil==5.9.5  # Process and system utilities
+
+# Testing with unwavering precision
+pytest==7.4.3  # Testing framework for deterministic validation
+pytest-asyncio==0.23.5  # Async testing with strategic precision
+
+# CLI tools with deterministic execution
+click==8.1.7  # Command line interface for unwavering control
