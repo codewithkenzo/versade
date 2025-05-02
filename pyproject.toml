@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools>=68.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dep-checker-mcp"
+version = "1.0.0"
+description = "High-performance dependency checking MCP server with strategic validation capabilities"
+authors = [
+    {name = "Makima", email = "makima@controldevil.org"},
+]
+requires-python = ">=3.13.0"
+readme = "README.md"
+license = {text = "MIT"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.13",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "fastapi==0.115.12",
+    "uvicorn==0.30.0",
+    "httpx==0.27.0",
+    "sse-starlette==1.8.2",
+    "python-dotenv==1.0.1",
+    "anyio==4.9.0",
+    "orjson==3.10.18",
+    "mypy==1.15.0"
+]
+
+[project.urls]
+"Homepage" = "https://github.com/makima/dep-checker-mcp"
+"Bug Tracker" = "https://github.com/makima/dep-checker-mcp/issues"
+
+[tool.setuptools]
+packages = ["dep_checker_mcp"]
+package-dir = {"" = "src"}
+
+[tool.mypy]
+python_version = "3.13"
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_return_any = true
+disallow_any_explicit = false
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+select = ["E", "F", "B", "I", "N", "W", "SIM", "C90", "ANN"]
+ignore = ["ANN101", "ANN102", "ANN002", "ANN003", "E501"]
