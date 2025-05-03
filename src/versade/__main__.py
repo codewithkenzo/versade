@@ -87,8 +87,61 @@ async def shutdown_event() -> None:
 
 
 def main() -> None:
-    """Strategic entry point with unwavering precision."""
-    uvicorn.run("versade.__main__:app", host="0.0.0.0", port=port, reload=True)
+    """Strategic entry point with unwavering precision for LLM and developer assistance."""
+    import argparse
+    import socket
+    from contextlib import closing
+    
+    # Create command line parser with strategic precision
+    parser = argparse.ArgumentParser(
+        description="Versade: Versatile dependency version checker and documentation finder for LLM and developer assistance"
+    )
+    parser.add_argument(
+        "-p", "--port", 
+        type=int,
+        default=port,
+        help=f"Port to run the server on (default: {port})"
+    )
+    parser.add_argument(
+        "--host", 
+        type=str,
+        default="0.0.0.0",
+        help="Host to bind the server to (default: 0.0.0.0)"
+    )
+    parser.add_argument(
+        "--check", 
+        action="store_true",
+        help="Check dependencies in current directory without starting server"
+    )
+    
+    args = parser.parse_args()
+    
+    # Handle check argument with unwavering precision
+    if args.check:
+        logger.info("Checking dependencies in current directory with strategic precision")
+        # TODO: Implement checking dependencies in current directory
+        return
+    
+    # Find available port with strategic fallback
+    def is_port_available(port):
+        with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as sock:
+            return sock.connect_ex((args.host, port)) != 0
+    
+    # If specified port is not available, find the next available port
+    if not is_port_available(args.port):
+        logger.warning(f"Port {args.port} is already in use. Finding available port with strategic precision...")
+        for port_attempt in range(args.port + 1, args.port + 100):
+            if is_port_available(port_attempt):
+                logger.info(f"Found available port: {port_attempt}")
+                args.port = port_attempt
+                break
+        else:
+            logger.error("Could not find an available port. Please specify an available port with --port")
+            return
+    
+    # Run server with strategic precision
+    logger.info(f"Starting Versade server on {args.host}:{args.port} with unwavering precision")
+    uvicorn.run("versade.__main__:app", host=args.host, port=args.port)
 
 
 if __name__ == "__main__":

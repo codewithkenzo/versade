@@ -98,13 +98,16 @@ docker run -d -p 9373:9373 --name versade-container versade:latest
 ## Quick Start
 
 ```bash
-# Run directly
-python -m versade
-
-# Or use the installed CLI
+# Run with the CLI (automatically finds an available port if 9373 is busy)
 versade
 
-# The server will be available at http://localhost:9373
+# Specify a custom port
+versade --port 9374
+
+# Show available options
+versade --help
+
+# The server will be available at http://localhost:9373 (or another available port)
 ```
 
 ## MCP Tools

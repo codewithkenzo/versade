@@ -1,12 +1,12 @@
 {
   "name": "versade",
   "version": "1.0.0",
-  "description": "Find package versions and documentation URLs with strategic precision",
+  "description": "Versatile dependency version checker and documentation finder for LLM and developer assistance",
   "author": "codewithkenzo",
   "license": "MIT",
   "server": {
-    "command": "python",
-    "args": ["-m", "versade"],
+    "command": "versade",
+    "args": [],
     "env": {
       "VERSADE_PORT": "9373",
       "VERSADE_LOG_LEVEL": "INFO"
