@@ -82,7 +82,7 @@ Versade automatically finds and provides URLs for:
 - **GitHub Repository**: Source code repository
 - **Type Hints**: mypy stubs information (for Python packages)
 
-Example response for a Python package:
+### Example response for a Python package:
 
 ```json
 {
@@ -96,6 +96,25 @@ Example response for a Python package:
   "api_docs_url": "https://fastapi.tiangolo.com/reference/",
   "github_url": "https://github.com/tiangolo/fastapi",
   "mypy_stub_url": "https://github.com/tiangolo/fastapi/blob/master/fastapi/py.typed"
+}
+```
+
+### Example response for an npm package:
+
+```json
+{
+  "name": "react",
+  "current_version": "17.0.1",
+  "latest_version": "19.1.0",
+  "is_outdated": true,
+  "homepage": "https://react.dev/",
+  "description": "React is a JavaScript library for building user interfaces.",
+  "release_date": "2025-03-28T19:59:42.053Z",
+  "security_issues": [],
+  "documentation_url": "https://react.dev/",
+  "api_docs_url": "https://github.com/facebook/react/blob/main/API.md",
+  "mypy_stub_url": null,
+  "github_url": "https://github.com/facebook/react"
 }
 ```
 
@@ -160,6 +179,85 @@ Versade was created to solve common challenges faced when working with dependenc
 4. **Type Safety**: Identify packages with typing support and locate mypy stubs
 
 The name "Versade" reflects the tool's versatility in handling different package ecosystems and providing useful information for developers.
+
+## Deployment Guide
+
+### PyPI
+
+```bash
+# Build the package
+python -m build
+
+# Upload to PyPI
+python -m twine upload dist/*
+```
+
+### Arch User Repository (AUR)
+
+```bash
+# Clone the AUR package repository
+git clone ssh://aur@aur.archlinux.org/python-versade.git
+cd python-versade
+
+# Update the PKGBUILD file
+# - Update pkgver variable to match the new version
+# - Update sha256sums if source files changed
+# - Update dependencies if needed
+
+# Generate .SRCINFO file
+makepkg --printsrcinfo > .SRCINFO
+
+# Commit and push changes
+git add PKGBUILD .SRCINFO
+git commit -m "update to version X.Y.Z"
+git push
+```
+
+### Smithery MCP Registry
+
+```bash
+# Log in to Smithery registry
+smith login
+
+# Register or update the MCP server
+smith mcp publish ./smithery-manifest.json
+```
+
+Example `smithery-manifest.json`:
+
+```json
+{
+  "name": "versade",
+  "version": "1.0.0",
+  "description": "Find package versions and documentation URLs",
+  "author": "codewithkenzo",
+  "license": "MIT",
+  "server": {
+    "command": "python",
+    "args": ["-m", "versade"],
+    "env": {}
+  },
+  "schemas": {
+    "config": {
+      "type": "object",
+      "properties": {
+        "port": {
+          "type": "number",
+          "default": 9373
+        }
+      }
+    }
+  }
+}
+```
+
+### mypy Type Stubs
+
+Ensure your package is properly typed:
+
+1. Include `py.typed` marker file in your package
+2. Register your type stubs with typeshed or provide inline documentation
+3. Submit a PR to DefinitelyTyped/typeshed for community type stubs
 
 ## License
 
