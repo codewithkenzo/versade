@@ -3,7 +3,7 @@ requires = ["setuptools>=68.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "versa"
+name = "versade"
 version = "1.0.0"
 description = "Versatile dependency version checker and documentation finder for LLM and developer assistance"
 authors = [
@@ -33,16 +33,16 @@ dependencies = [
 ]
 
 [project.urls]
-homepage = "https://github.com/codewithkenzo/versa"
-"bug_tracker" = "https://github.com/codewithkenzo/versa/issues"
+homepage = "https://github.com/codewithkenzo/versade"
+"bug_tracker" = "https://github.com/codewithkenzo/versade/issues"
 
 [project.scripts]
-versa = "versa.__main__:main"
+versade = "versade.__main__:main"
 
 [tool.setuptools]
-packages = ["versa"]
+packages = ["versade"]
 package_dir = {"" = "src"}
-package_data = {"versa" = ["py.typed"]}
+package_data = {"versade" = ["py.typed"]}
 
 [tool.mypy]
 python_version = "3.13"

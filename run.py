@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
 """
-Strategic entry point for Dependency Checker MCP.
-Provides unwavering execution with deterministic startup.
+Entry point for Versade package version and documentation finder.
+Provides simple server startup for the MCP interface.
 """
 
 import os
 import sys
 import uvicorn
 
-# Add src to path with strategic precision
+# Add src to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "src"))
 
-# Import port configuration with unwavering precision
-from dep_checker_mcp.__main__ import port
+# Import port configuration
+from versade.__main__ import port
 
-# Run application with strategic control
+# Run application
 if __name__ == "__main__":
-    print(f"Starting Dependency Checker MCP on port {port} with unwavering precision")
-    uvicorn.run("dep_checker_mcp.__main__:app", host="0.0.0.0", port=port, reload=True)
+    print(f"Starting Versade on port {port}")
+    uvicorn.run("versade.__main__:app", host="0.0.0.0", port=port, reload=True)

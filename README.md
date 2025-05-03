@@ -1,11 +1,11 @@
-# Versa
+# Versade
 
 A versatile dependency version checker and documentation finder, designed to help developers and LLMs find the latest package versions, compatibility information, and documentation URLs.
 
 ## Architecture
 
 ```
-versa/
+versade/
 ├── api/         # FastAPI endpoints for version checking
 ├── models/      # Core data models with full type safety
 ├── services/    # Dependency checking and documentation services
@@ -39,8 +39,8 @@ versa/
 
 ```bash
 # Clone the repository
-git clone https://github.com/codewithkenzo/versa.git
-cd versa
+git clone https://github.com/codewithkenzo/versade.git
+cd versade
 
 # Install from source
 pip install -e .
@@ -49,17 +49,17 @@ pip install -e .
 pip install -e ".[dev]"
 
 # Install directly from PyPI
-pip install versa
+pip install versade
 ```
 
 ## Quick Start
 
 ```bash
 # Run directly
-python -m versa
+python -m versade
 
 # Or use the installed CLI
-versa
+versade
 
 # The server will be available at http://localhost:9373
 ```
@@ -75,7 +75,7 @@ versa
 
 ## Documentation URLs
 
-Versa automatically finds and provides URLs for:
+Versade automatically finds and provides URLs for:
 
 - **Documentation**: Main documentation site for the package
 - **API Reference**: API documentation for developers
@@ -101,13 +101,13 @@ Example response for a Python package:
 
 ## Environment Variables
 
-- `VERSA_PORT`: Port for the server (default: 9373)
-- `VERSA_LOG_LEVEL`: Logging level (default: INFO)
-- `VERSA_CORS_ORIGINS`: Comma-separated list of allowed origins (default: *)
-- `VERSA_MAX_REQUEST_SIZE`: Maximum request size in bytes (default: 1MB)
-- `VERSA_RATE_LIMIT_REQUESTS`: Rate limit requests per window (default: 5)
-- `VERSA_RATE_LIMIT_WINDOW`: Rate limit window in seconds (default: 1)
-- `VERSA_TIMEOUT`: HTTP request timeout in seconds (default: 30.0)
+- `VERSADE_PORT`: Port for the server (default: 9373)
+- `VERSADE_LOG_LEVEL`: Logging level (default: INFO)
+- `VERSADE_CORS_ORIGINS`: Comma-separated list of allowed origins (default: *)
+- `VERSADE_MAX_REQUEST_SIZE`: Maximum request size in bytes (default: 1MB)
+- `VERSADE_RATE_LIMIT_REQUESTS`: Rate limit requests per window (default: 5)
+- `VERSADE_RATE_LIMIT_WINDOW`: Rate limit window in seconds (default: 1)
+- `VERSADE_TIMEOUT`: HTTP request timeout in seconds (default: 30.0)
 
 ## Development
 
@@ -116,7 +116,7 @@ Example response for a Python package:
 pytest
 
 # Run tests with coverage reporting
-pytest --cov=versa
+pytest --cov=versade
 
 # Run tests with asyncio auto mode (configured in pyproject.toml)
 # asyncio_mode = "auto"
@@ -131,35 +131,35 @@ ruff check src
 
 ## MCP Integration
 
-You can integrate Versa with Windsurf's MCP (Model Control Protocol) system by adding it to your MCP configuration:
+You can integrate Versade with Windsurf's MCP (Model Control Protocol) system by adding it to your MCP configuration:
 
 ```json
 {
   "mcpServers": {
-    "versa": {
+    "versade": {
       "command": "python",
       "args": [
-        "/path/to/versa/run.py"
+        "/path/to/versade/run.py"
       ],
       "env": {
-        "VERSA_PORT": "9373",
-        "VERSA_LOG_LEVEL": "INFO"
+        "VERSADE_PORT": "9373",
+        "VERSADE_LOG_LEVEL": "INFO"
       }
     }
   }
 }
 ```
 
-## Why Versa?
+## Why Versade?
 
-Versa was created to solve common challenges faced when working with dependencies:
+Versade was created to solve common challenges faced when working with dependencies:
 
 1. **LLM Assistance**: Help LLMs find accurate version and documentation information
 2. **Dependency Management**: Quick checks for outdated packages and security issues
 3. **Documentation Discovery**: Auto-find relevant documentation links without manual searches
 4. **Type Safety**: Identify packages with typing support and locate mypy stubs
 
-The name "Versa" reflects the tool's versatility in handling different package ecosystems and providing useful information for developers.
+The name "Versade" reflects the tool's versatility in handling different package ecosystems and providing useful information for developers.
 
 ## License
 
