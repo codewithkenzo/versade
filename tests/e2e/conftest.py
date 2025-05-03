@@ -10,9 +10,9 @@ from typing import AsyncGenerator, Generator
 import pytest
 from fastapi.testclient import TestClient
 
-from dep_checker_mcp.api.routes import router
-from dep_checker_mcp.models.core import McpError, ErrorCode
-from dep_checker_mcp.services.checker import DependencyChecker
+from versade.api.routes import router
+from versade.models.core import McpError, ErrorCode
+from versade.services.checker import DependencyChecker
 
 
 @pytest.fixture

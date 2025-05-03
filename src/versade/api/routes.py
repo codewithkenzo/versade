@@ -1,6 +1,6 @@
 """
-API routes for the Dependency Checker MCP.
-Strategic FastAPI endpoints with unwavering precision.
+API routes for the Versade MCP.
+Strategic FastAPI endpoints for LLM and developer assistance with unwavering precision.
 """
 
 import logging
@@ -22,7 +22,7 @@ from versade.models.core import (
 from versade.services.checker import DependencyChecker
 
 # Configure logging with strategic precision
-logger = logging.getLogger("dep-checker-mcp")
+logger = logging.getLogger("versade")
 
 router = APIRouter()
 
@@ -51,7 +51,7 @@ async def get_meta() -> Dict[str, Any]:
         "metadata": {
             "name": "versade",
             "version": "1.0.0",
-            "description": "Versade package version and documentation finder for Python and npm packages"
+            "description": "Versade package version and documentation finder for LLM and developer assistance with Python and npm packages"
         },
         "capabilities": {
             "tools": {}
@@ -68,7 +68,7 @@ async def list_tools(request: Request) -> Dict[str, Any]:
     tools = [
         {
             "name": "mcp_check_python_package",
-            "description": "Check a Python package for updates and security issues",
+            "description": "Check a Python package for updates, security issues and documentation for LLM and developer assistance",
             "parameters": {
                 "properties": {
                     "package_name": {
@@ -85,7 +85,7 @@ async def list_tools(request: Request) -> Dict[str, Any]:
         },
         {
             "name": "mcp_check_npm_package",
-            "description": "Check an npm package for updates and security issues",
+            "description": "Check an npm package for updates, security issues and documentation for LLM and developer assistance",
             "parameters": {
                 "properties": {
                     "package_name": {
@@ -102,7 +102,7 @@ async def list_tools(request: Request) -> Dict[str, Any]:
         },
         {
             "name": "mcp_check_python_file",
-            "description": "Check a Python requirements.txt or pyproject.toml file",
+            "description": "Check a Python requirements.txt or pyproject.toml file for LLM and developer assistance",
             "parameters": {
                 "properties": {
                     "file_path": {
@@ -115,7 +115,7 @@ async def list_tools(request: Request) -> Dict[str, Any]:
         },
         {
             "name": "mcp_check_npm_file",
-            "description": "Check a package.json file",
+            "description": "Check a package.json file for LLM and developer assistance",
             "parameters": {
                 "properties": {
                     "file_path": {
@@ -128,7 +128,7 @@ async def list_tools(request: Request) -> Dict[str, Any]:
         },
         {
             "name": "mcp_run_mypy",
-            "description": "Run mypy type checker on a Python file or directory",
+            "description": "Run mypy type checker on a Python file or directory for LLM and developer assistance",
             "parameters": {
                 "properties": {
                     "file_path": {
@@ -141,7 +141,7 @@ async def list_tools(request: Request) -> Dict[str, Any]:
         },
         {
             "name": "mcp_run_npm_audit",
-            "description": "Run npm audit on a package.json file",
+            "description": "Run npm audit on a package.json file for LLM and developer assistance",
             "parameters": {
                 "properties": {
                     "file_path": {

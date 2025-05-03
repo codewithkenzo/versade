@@ -13,9 +13,9 @@ import pytest_asyncio
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from dep_checker_mcp.api.routes import router
-from dep_checker_mcp.models.core import ErrorCode, McpError
-from dep_checker_mcp.services.checker import DependencyChecker
+from versade.api.routes import router
+from versade.models.core import ErrorCode, McpError
+from versade.services.checker import DependencyChecker
 
 # pytest-asyncio is configured in pyproject.toml with unwavering precision
 

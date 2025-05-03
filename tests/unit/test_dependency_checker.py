@@ -10,12 +10,12 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from dep_checker_mcp.models.core import (
+from versade.models.core import (
     ErrorCode,
     McpError,
     PackageInfo
 )
-from dep_checker_mcp.services.checker import DependencyChecker
+from versade.services.checker import DependencyChecker
 
 
 @pytest.fixture

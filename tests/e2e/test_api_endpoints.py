@@ -19,7 +19,7 @@ def test_get_meta(test_client: TestClient) -> None:
     assert response.status_code == 200
     data = response.json()
     assert "metadata" in data
-    assert data["metadata"]["name"] == "dependency-checker-mcp"
+    assert data["metadata"]["name"] == "versade"
     assert "version" in data["metadata"]
     assert "capabilities" in data
 

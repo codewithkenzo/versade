@@ -1,6 +1,6 @@
 """
-Main entry point for the Dependency Checker MCP server.
-Provides deterministic startup and shutdown with strategic precision.
+Main entry point for the Versade MCP server.
+Provides deterministic startup and shutdown for LLM and developer dependency checking.
 """
 
 import asyncio
@@ -23,20 +23,20 @@ logging.basicConfig(
     format="%(asctime)s | %(levelname)s | %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S"
 )
-logger = logging.getLogger("dep-checker-mcp")
+logger = logging.getLogger("versade")
 
 # Global dependency checker instance for strategic reuse
 dependency_checker: Optional[DependencyChecker] = None
 
 # Environment variable for port with unwavering precision
 DEFAULT_PORT = 9373
-port = int(os.environ.get("DEP_CHECKER_MCP_PORT", DEFAULT_PORT))
+port = int(os.environ.get("VERSADE_PORT", DEFAULT_PORT))
 
 # FastAPI application with strategic configuration
 app = FastAPI(
-    title="Dependency Checker MCP", 
+    title="Versade", 
     version="1.0.0",
-    description="Strategic MCP server for validating both Python and npm dependencies with unwavering precision."
+    description="Versatile dependency version checker and documentation finder for LLM and developer assistance."
 )
 
 # Add CORS middleware with unwavering precision
@@ -68,9 +68,9 @@ async def startup_event() -> None:
     Initialize resources with deterministic execution.
     """
     global dependency_checker
-    logger.info("Starting Dependency Checker MCP with unwavering precision")
+    logger.info("Starting Versade with unwavering precision")
     dependency_checker = DependencyChecker()
-    logger.info(f"Dependency Checker MCP running on port {port}")
+    logger.info(f"Versade running on port {port}")
 
 
 @app.on_event("shutdown")
@@ -80,15 +80,15 @@ async def shutdown_event() -> None:
     Clean up resources with deterministic execution.
     """
     global dependency_checker
-    logger.info("Shutting down Dependency Checker MCP with strategic precision")
+    logger.info("Shutting down Versade with strategic precision")
     if dependency_checker:
         await dependency_checker.close()
-    logger.info("Dependency Checker MCP has been shut down with unwavering precision")
+    logger.info("Versade has been shut down with unwavering precision")
 
 
 def main() -> None:
     """Strategic entry point with unwavering precision."""
-    uvicorn.run("dep_checker_mcp.__main__:app", host="0.0.0.0", port=port, reload=True)
+    uvicorn.run("versade.__main__:app", host="0.0.0.0", port=port, reload=True)
 
 
 if __name__ == "__main__":

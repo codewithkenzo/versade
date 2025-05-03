@@ -9,7 +9,7 @@ description = "Versatile dependency version checker and documentation finder for
 authors = [
     {name = "Kenzo", email = "codewithkenzo@gmail.com"}
 ]
-requires-python = ">=3.13.0"
+requires-python = ">=3.12.0"
 readme = "README.md"
 license = {text = "MIT"}
 classifiers = [
@@ -50,7 +50,7 @@ include = ["versade", "versade.*"]
 versade = ["py.typed"]
 
 [tool.mypy]
-python_version = "3.13"
+python_version = "3.12"
 warn_redundant_casts = true
 warn_unused_ignores = true
 warn_no_return = true
@@ -62,7 +62,7 @@ plugins = ["pydantic.mypy"]
 
 [tool.ruff]
 line-length = 100
-target-version = "py313"
+target-version = "py312"
 select = ["E", "F", "B", "I", "N", "W", "SIM", "C90", "ANN"]
 ignore = ["ANN101", "ANN102", "ANN002", "ANN003", "E501"]
 

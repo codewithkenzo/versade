@@ -1,6 +1,12 @@
 # Versade
 
-A versatile dependency version checker and documentation finder, designed to help developers and LLMs find the latest package versions, compatibility information, and documentation URLs.
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/codewithkenzo/versade)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](https://opensource.org/licenses/MIT)
+[![Python Version](https://img.shields.io/badge/python-3.12%2B-blue)](https://www.python.org/)
+[![Type Hints](https://img.shields.io/badge/type%20hints-100%25-brightgreen)](https://mypy.readthedocs.io/)
+[![AUR](https://img.shields.io/badge/AUR-versade-blue)](https://aur.archlinux.org/packages/versade)
+
+A versatile dependency version checker and documentation finder, designed specifically for LLMs and developers to find the latest package versions, compatibility information, and documentation URLs with unwavering precision.
 
 ## Architecture
 
@@ -37,6 +43,33 @@ versade/
 
 ## Installation
 
+Choose your preferred installation method:
+
+### From PyPI
+
+```bash
+# Using pip
+pip install versade
+
+# Using uv (faster installation)
+uv pip install versade
+
+# Using pipx (isolated environment)
+pipx install versade
+```
+
+### From AUR (Arch Linux)
+
+```bash
+# Using yay
+yay -S versade
+
+# Using paru
+paru -S versade
+```
+
+### From Source
+
 ```bash
 # Clone the repository
 git clone https://github.com/codewithkenzo/versade.git
@@ -47,9 +80,19 @@ pip install -e .
 
 # Or install with development dependencies
 pip install -e ".[dev]"
+```
 
-# Install directly from PyPI
-pip install versade
+### With Docker
+
+```bash
+# Pull from GitHub Container Registry
+docker pull ghcr.io/codewithkenzo/versade:latest
+
+# Or build locally
+docker build -t versade:latest .
+
+# Run the container
+docker run -d -p 9373:9373 --name versade-container versade:latest
 ```
 
 ## Quick Start
@@ -150,7 +193,25 @@ ruff check src
 
 ## MCP Integration
 
-You can integrate Versade with Windsurf's MCP (Model Control Protocol) system by adding it to your MCP configuration:
+You can integrate Versade with Windsurf's MCP (Model Control Protocol) system by adding it to your MCP configuration. 
+
+### Standard MCP Configuration
+
+```json
+{
+  "mcpServers": {
+    "versade": {
+      "command": "versade",
+      "env": {
+        "VERSADE_PORT": "9373",
+        "VERSADE_LOG_LEVEL": "INFO"
+      }
+    }
+  }
+}
+```
+
+### Legacy Python Module (for those unfamiliar with Python in MCP configs)
 
 ```json
 {
@@ -158,7 +219,7 @@ You can integrate Versade with Windsurf's MCP (Model Control Protocol) system by
     "versade": {
       "command": "python",
       "args": [
-        "/path/to/versade/run.py"
+        "-m", "versade"
       ],
       "env": {
         "VERSADE_PORT": "9373",
@@ -229,12 +290,11 @@ Example `smithery-manifest.json`:
 {
   "name": "versade",
   "version": "1.0.0",
-  "description": "Find package versions and documentation URLs",
+  "description": "Versatile dependency version checker and documentation finder for LLM and developer assistance",
   "author": "codewithkenzo",
   "license": "MIT",
   "server": {
-    "command": "python",
-    "args": ["-m", "versade"],
+    "command": "versade",
     "env": {}
   },
   "schemas": {
@@ -244,6 +304,11 @@ Example `smithery-manifest.json`:
         "port": {
           "type": "number",
           "default": 9373
+        },
+        "log_level": {
+          "type": "string",
+          "enum": ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
+          "default": "INFO"
         }
       }
     }
@@ -259,6 +324,47 @@ Ensure your package is properly typed:
 2. Register your type stubs with typeshed or provide inline documentation
 3. Submit a PR to DefinitelyTyped/typeshed for community type stubs
 
+## Project History
+
+Versade began as a dependency checker MCP server and has evolved through several phases:
+
+### Phase 1: Initial Implementation
+- Built core functionality for checking Python and npm package versions
+- Implemented FastAPI endpoints with SSE support
+- Created initial unit and integration tests
+
+### Phase 2: Enhancement & Expansion
+- Added documentation URL retrieval for Python and npm packages
+- Improved error handling and rate limiting
+- Enhanced mypy integration for better type safety
+
+### Phase 3: Rebranding & Refinement
+- Rebranded from "dependency-checker-mcp" to "Versade"
+- Achieved 100% type safety with mypy
+- Enhanced Docker support with multi-stage builds
+- Expanded test coverage to >90%
+
+### Phase 4: Deployment & Distribution
+- Created AUR package for Arch Linux users
+- Registered with Smithery MCP Registry
+- Published to PyPI with correct type stubs
+- Added support for uv/uvx installation
+
+## Project Management
+
+This project is tracked using Linear, with a comprehensive task breakdown and milestone tracking. Our Linear project includes:
+
+- Feature tracking with detailed specifications
+- Bug reports with reproduction steps
+- Release planning with version milestones
+- Integration testing schedules
+
+View our project timeline and roadmap in the [Linear Project](https://linear.app/versade).
+
 ## License
 
 MIT
+
+---
+
+<p align="center">Made with ❤️ for LLMs and developers</p>

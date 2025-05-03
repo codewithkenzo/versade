@@ -10,7 +10,7 @@ from typing import Dict, Any
 import pytest
 from fastapi.testclient import TestClient
 
-from dep_checker_mcp.models.core import ErrorCode
+from versade.models.core import ErrorCode
 
 
 @pytest.mark.e2e
@@ -22,7 +22,7 @@ def test_meta_endpoint(test_client: TestClient) -> None:
     assert response.status_code == 200
     data = response.json()
     assert "metadata" in data
-    assert data["metadata"]["name"] == "dependency-checker-mcp"
+    assert data["metadata"]["name"] == "versade"
     assert "version" in data["metadata"]
     assert "capabilities" in data
 
