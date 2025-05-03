@@ -3,11 +3,11 @@ requires = ["setuptools>=68.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "dep-checker-mcp"
+name = "dep_checker_mcp"
 version = "1.0.0"
 description = "High-performance dependency checking MCP server with strategic validation capabilities"
 authors = [
-    {name = "Makima", email = "makima@controldevil.org"},
+    {name = "Makima", email = "makima@controldevil.org"}
 ]
 requires-python = ">=3.13.0"
 readme = "README.md"
@@ -16,7 +16,7 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.13",
     "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
+    "Operating System :: OS Independent"
 ]
 dependencies = [
     "fastapi==0.115.12",
@@ -26,16 +26,23 @@ dependencies = [
     "python-dotenv==1.0.1",
     "anyio==4.9.0",
     "orjson==3.10.18",
-    "mypy==1.15.0"
+    "mypy==1.15.0",
+    "pytest",
+    "pytest-asyncio",
+    "pytest-cov"
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/makima/dep-checker-mcp"
-"Bug Tracker" = "https://github.com/makima/dep-checker-mcp/issues"
+homepage = "https://github.com/makima/dep-checker-mcp"
+"bug_tracker" = "https://github.com/makima/dep-checker-mcp/issues"
+
+[project.scripts]
+dep_checker_mcp = "dep_checker_mcp.__main__:main"
 
 [tool.setuptools]
 packages = ["dep_checker_mcp"]
-package-dir = {"" = "src"}
+package_dir = {"" = "src"}
+package_data = {"dep_checker_mcp" = ["py.typed"]}
 
 [tool.mypy]
 python_version = "3.13"
@@ -46,9 +53,23 @@ warn_return_any = true
 disallow_any_explicit = false
 disallow_untyped_defs = true
 disallow_incomplete_defs = true
+plugins = ["pydantic.mypy"]
 
 [tool.ruff]
 line-length = 100
 target-version = "py313"
 select = ["E", "F", "B", "I", "N", "W", "SIM", "C90", "ANN"]
 ignore = ["ANN101", "ANN102", "ANN002", "ANN003", "E501"]
+
+[tool.ruff.per-file-ignores]
+"tests/*" = ["ANN"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+markers = [
+    "unit: marks test as a unit test",
+    "e2e: marks test as an end-to-end test"
+]
