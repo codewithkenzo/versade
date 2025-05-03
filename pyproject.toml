@@ -3,11 +3,11 @@ requires = ["setuptools>=68.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "dep_checker_mcp"
+name = "versa"
 version = "1.0.0"
-description = "High-performance dependency checking MCP server with strategic validation capabilities"
+description = "Versatile dependency version checker and documentation finder for LLM and developer assistance"
 authors = [
-    {name = "Makima", email = "makima@controldevil.org"}
+    {name = "Kenzo", email = "codewithkenzo@gmail.com"}
 ]
 requires-python = ">=3.13.0"
 readme = "README.md"
@@ -33,16 +33,16 @@ dependencies = [
 ]
 
 [project.urls]
-homepage = "https://github.com/makima/dep-checker-mcp"
-"bug_tracker" = "https://github.com/makima/dep-checker-mcp/issues"
+homepage = "https://github.com/codewithkenzo/versa"
+"bug_tracker" = "https://github.com/codewithkenzo/versa/issues"
 
 [project.scripts]
-dep_checker_mcp = "dep_checker_mcp.__main__:main"
+versa = "versa.__main__:main"
 
 [tool.setuptools]
-packages = ["dep_checker_mcp"]
+packages = ["versa"]
 package_dir = {"" = "src"}
-package_data = {"dep_checker_mcp" = ["py.typed"]}
+package_data = {"versa" = ["py.typed"]}
 
 [tool.mypy]
 python_version = "3.13"
