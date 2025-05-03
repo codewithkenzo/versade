@@ -46,12 +46,12 @@ def get_dependency_checker() -> DependencyChecker:
 
 @router.get("/mcp/meta", response_class=OrjsonResponse)
 async def get_meta() -> Dict[str, Any]:
-    """Get MCP server metadata with strategic values."""
+    """Get MCP server metadata."""
     return {
         "metadata": {
-            "name": "dependency-checker-mcp",
+            "name": "versade",
             "version": "1.0.0",
-            "description": "Strategic MCP server for validating both Python and npm dependencies with unwavering precision"
+            "description": "Versade package version and documentation finder for Python and npm packages"
         },
         "capabilities": {
             "tools": {}

@@ -242,13 +242,30 @@ class DependencyChecker:
             
             elif file_path.endswith(".toml"):
                 # Parse pyproject.toml
+                toml_parser = None
                 try:
                     import tomllib
+                    toml_parser = tomllib
                 except ImportError:
-                    import tomli as tomllib
+                    try:
+                        import tomli  # type: ignore
+                        toml_parser = tomli
+                    except ImportError:
+                        # If neither is available, raise a clear error
+                        raise McpError(
+                            ErrorCode.TOOL_EXECUTION_ERROR,
+                            "Neither tomllib nor tomli is available. Please install tomli package."
+                        )
                 
+                # toml_parser should never be None here, but ensure it for type checking
+                if toml_parser is None:
+                    raise McpError(
+                        ErrorCode.TOOL_EXECUTION_ERROR,
+                        "TOML parser not available"
+                    )
+                    
                 with open(file_path, "rb") as f:
-                    toml_data = tomllib.load(f)
+                    toml_data = toml_parser.load(f)
                 
                 # Check various potential locations for dependencies
                 dependencies = []
@@ -262,7 +279,7 @@ class DependencyChecker:
                                 if isinstance(version, str):
                                     dependencies.append((package, version))
                                 else:
-                                    dependencies.append((package, None))
+                                    dependencies.append((package, ""))
                 
                 # PEP 621 style
                 elif "project" in toml_data:
@@ -272,11 +289,11 @@ class DependencyChecker:
                             if "==" in dep:
                                 parts = dep.split("==")
                                 package_name = parts[0].strip()
-                                version = parts[1].strip() if len(parts) > 1 else None
+                                version = parts[1].strip() if len(parts) > 1 else ""
                                 dependencies.append((package_name, version))
                             else:
                                 package_name = dep.split("[")[0].strip() if "[" in dep else dep
-                                dependencies.append((package_name, None))
+                                dependencies.append((package_name, ""))
                 
                 # Add dependencies from various locations
                 for dep in dependencies:
@@ -376,8 +393,10 @@ class DependencyChecker:
                         issues.append(MypyIssue(
                             file=file,
                             line=int(line_num),
-                            type=issue_type,
-                            message=message
+                            column=0,  # Default column when not parsed
+                            level=issue_type,
+                            message=message,
+                            error_code=""
                         ))
             
             return MypyResult(
