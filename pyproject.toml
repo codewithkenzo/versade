@@ -40,9 +40,14 @@ homepage = "https://github.com/codewithkenzo/versade"
 versade = "versade.__main__:main"
 
 [tool.setuptools]
-packages = ["versade"]
-package_dir = {"" = "src"}
-package_data = {"versade" = ["py.typed"]}
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["versade", "versade.*"]
+
+[tool.setuptools.package-data]
+versade = ["py.typed"]
 
 [tool.mypy]
 python_version = "3.13"
