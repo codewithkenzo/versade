@@ -6,7 +6,8 @@
 [![AUR](https://img.shields.io/badge/AUR-versade-blue)](https://aur.archlinux.org/packages/versade)
 
 **Versade** is your no-nonsense dependency and docs checker, built for LLMs, devs, and automation. Instantly find the latest package versions, compatibility, and docs-no more mismatches or guesswork.
-
+---
+05/05/25 - Currently working in curl, but not as mcp. WIP
 ---
 
 ## 🚀 Features
