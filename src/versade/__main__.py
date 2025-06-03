@@ -1,147 +1,117 @@
+#!/usr/bin/env python3
 """
-Main entry point for the Versade MCP server.
-Provides deterministic startup and shutdown for LLM and developer dependency checking.
+Versade MCP Server - Main entry point
+Supports multiple transport modes for maximum compatibility.
 """
 
-import asyncio
-import logging
-import os
-from typing import Dict, Any, Optional
+import argparse
+import sys
+from typing import Optional
 
-import uvicorn
-from fastapi import FastAPI, Request
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
-
-from versade.api.routes import router
-from versade.models.core import ErrorCode, McpError
-from versade.services.checker import DependencyChecker
-
-# Configure logging with strategic precision
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s | %(levelname)s | %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S"
-)
-logger = logging.getLogger("versade")
-
-# Global dependency checker instance for strategic reuse
-dependency_checker: Optional[DependencyChecker] = None
-
-# Environment variable for port with unwavering precision
-DEFAULT_PORT = 9373
-port = int(os.environ.get("VERSADE_PORT", DEFAULT_PORT))
-
-# FastAPI application with strategic configuration
-app = FastAPI(
-    title="Versade", 
-    version="1.0.0",
-    description="Versatile dependency version checker and documentation finder for LLM and developer assistance."
-)
-
-# Add CORS middleware with unwavering precision
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-# Include API routes with strategic precision
-app.include_router(router)
-
-
-@app.exception_handler(McpError)
-async def mcp_error_handler(request: Request, exc: McpError) -> JSONResponse:
-    """Handle MCP errors with strategic precision."""
-    return JSONResponse(
-        status_code=400,
-        content={"error": {"code": exc.code, "message": exc.message}}
-    )
-
-
-@app.on_event("startup")
-async def startup_event() -> None:
-    """
-    Strategic startup event with unwavering precision.
-    Initialize resources with deterministic execution.
-    """
-    global dependency_checker
-    logger.info("Starting Versade with unwavering precision")
-    dependency_checker = DependencyChecker()
-    logger.info(f"Versade running on port {port}")
-
-
-@app.on_event("shutdown")
-async def shutdown_event() -> None:
-    """
-    Strategic shutdown event with unwavering precision.
-    Clean up resources with deterministic execution.
-    """
-    global dependency_checker
-    logger.info("Shutting down Versade with strategic precision")
-    if dependency_checker:
-        await dependency_checker.close()
-    logger.info("Versade has been shut down with unwavering precision")
+from versade.server import mcp
 
 
 def main() -> None:
-    """Strategic entry point with unwavering precision for LLM and developer assistance."""
-    import argparse
-    import socket
-    from contextlib import closing
-    
-    # Create command line parser with strategic precision
+    """Main entry point for Versade MCP Server."""
     parser = argparse.ArgumentParser(
-        description="Versade: Versatile dependency version checker and documentation finder for LLM and developer assistance"
+        description="Versade MCP Server - Dependency analysis with strategic precision",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  versade                           # Run with stdio transport (default)
+  versade --transport sse           # Run with SSE transport on localhost:8000
+  versade --transport sse --port 9373  # Run with SSE on custom port
+  versade --host 0.0.0.0 --port 8080   # Run with SSE on all interfaces
+  
+Transport modes:
+  stdio: Standard input/output (for MCP clients like Claude Desktop)
+  sse: Server-Sent Events over HTTP (for web clients)
+        """
     )
+    
     parser.add_argument(
-        "-p", "--port", 
-        type=int,
-        default=port,
-        help=f"Port to run the server on (default: {port})"
+        "--transport", 
+        choices=["stdio", "sse"], 
+        default="stdio",
+        help="Transport mode (default: stdio)"
     )
     parser.add_argument(
         "--host", 
-        type=str,
-        default="0.0.0.0",
-        help="Host to bind the server to (default: 0.0.0.0)"
+        default="127.0.0.1",
+        help="Host to bind to (default: 127.0.0.1)"
     )
     parser.add_argument(
-        "--check", 
-        action="store_true",
-        help="Check dependencies in current directory without starting server"
+        "--port", 
+        type=int, 
+        default=8000,
+        help="Port to bind to (default: 8000)"
+    )
+    parser.add_argument(
+        "--log-level",
+        choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
+        default="INFO",
+        help="Log level (default: INFO)"
+    )
+    parser.add_argument(
+        "--version",
+        action="version",
+        version="Versade 1.0.0"
+    )
+    parser.add_argument(
+        "--check-package",
+        metavar="PACKAGE",
+        help="Quick check of a package (for testing)"
     )
     
     args = parser.parse_args()
     
-    # Handle check argument with unwavering precision
-    if args.check:
-        logger.info("Checking dependencies in current directory with strategic precision")
-        # TODO: Implement checking dependencies in current directory
+    # Handle quick package check
+    if args.check_package:
+        import asyncio
+        from versade.server import check_python_package
+        
+        async def quick_check():
+            print(f"🔍 Checking package: {args.check_package}")
+            result = await check_python_package(args.check_package)
+            if result.get("success"):
+                print(f"✅ {result['name']} v{result['latest_version']}")
+                print(f"   Description: {result.get('description', 'N/A')}")
+                print(f"   Homepage: {result.get('homepage', 'N/A')}")
+            else:
+                print(f"❌ Error: {result.get('error', 'Unknown error')}")
+        
+        asyncio.run(quick_check())
         return
     
-    # Find available port with strategic fallback
-    def is_port_available(port):
-        with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as sock:
-            return sock.connect_ex((args.host, port)) != 0
+    # Set log level
+    import logging
+    import os
+    os.environ["VERSADE_LOG_LEVEL"] = args.log_level
     
-    # If specified port is not available, find the next available port
-    if not is_port_available(args.port):
-        logger.warning(f"Port {args.port} is already in use. Finding available port with strategic precision...")
-        for port_attempt in range(args.port + 1, args.port + 100):
-            if is_port_available(port_attempt):
-                logger.info(f"Found available port: {port_attempt}")
-                args.port = port_attempt
-                break
-        else:
-            logger.error("Could not find an available port. Please specify an available port with --port")
-            return
+    # Print startup info for non-stdio modes
+    if args.transport != "stdio":
+        print(f"🚀 Starting Versade MCP Server")
+        print(f"   Transport: {args.transport}")
+        print(f"   Address: {args.host}:{args.port}")
+        print(f"   Log level: {args.log_level}")
+        print(f"   Available at: http://{args.host}:{args.port}")
+        print()
     
-    # Run server with strategic precision
-    logger.info(f"Starting Versade server on {args.host}:{args.port} with unwavering precision")
-    uvicorn.run("versade.__main__:app", host=args.host, port=args.port)
+    # Run the server
+    try:
+        # Set environment variables for SSE mode
+        if args.transport == "sse":
+            os.environ["MCP_SSE_HOST"] = args.host
+            os.environ["MCP_SSE_PORT"] = str(args.port)
+        
+        # Run with the specified transport
+        mcp.run(transport=args.transport)
+    except KeyboardInterrupt:
+        print("\n👋 Versade MCP Server stopped")
+        sys.exit(0)
+    except Exception as e:
+        print(f"❌ Error starting server: {e}")
+        sys.exit(1)
 
 
 if __name__ == "__main__":

@@ -1,10 +1,30 @@
 """
-Dependency Checker MCP
-------------------------
-Strategic MCP server for validating both Python and npm dependencies with unwavering precision.
-Provides deterministic dependency checking, version comparison, and security reporting.
+Versade: Versatile dependency analysis and MCP server with strategic precision.
 
-Version: 1.0.0
+A modern MCP server for dependency analysis, package checking, and security monitoring.
+Supports Python (PyPI) and npm packages with comprehensive analysis capabilities.
 """
 
 __version__ = "1.0.0"
+__author__ = "Versade Team"
+__description__ = "Versatile dependency analysis and MCP server with strategic precision"
+
+# Export main server for MCP integration
+from versade.server import mcp
+
+# Export key components for programmatic use
+from versade.server import (
+    check_python_package,
+    check_npm_package,
+    analyze_dependencies,
+)
+
+__all__ = [
+    "mcp",
+    "check_python_package", 
+    "check_npm_package",
+    "analyze_dependencies",
+    "__version__",
+    "__author__",
+    "__description__",
+]

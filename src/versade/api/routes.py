@@ -3,6 +3,7 @@ API routes for the Versade MCP.
 Strategic FastAPI endpoints for LLM and developer assistance with unwavering precision.
 """
 
+import asyncio
 import logging
 import uuid
 from typing import Any, Dict, List, Optional
@@ -19,8 +20,7 @@ from versade.models.core import (
     NpmAuditResult,
     PackageInfo,
 )
-from versade.services.checker import DependencyChecker
-
+from versade.server import check_python_package, check_npm_package
 # Configure logging with strategic precision
 logger = logging.getLogger("versade")
 
@@ -37,11 +37,6 @@ class OrjsonResponse(JSONResponse):
             content,
             option=orjson.OPT_SERIALIZE_NUMPY | orjson.OPT_SERIALIZE_DATACLASS | orjson.OPT_NON_STR_KEYS
         )
-
-
-def get_dependency_checker() -> DependencyChecker:
-    """Dependency injection with strategic precision."""
-    return DependencyChecker()
 
 
 @router.get("/mcp/meta", response_class=OrjsonResponse)
@@ -62,96 +57,50 @@ async def get_meta() -> Dict[str, Any]:
 @router.post("/mcp/list_tools", response_class=OrjsonResponse)
 async def list_tools(request: Request) -> Dict[str, Any]:
     """List available tools with deterministic execution."""
-    data = await request.json()
+    try:
+        data = await request.json()
+    except:
+        data = {}
     request_id = data.get("id", str(uuid.uuid4()))
     
     tools = [
         {
             "name": "mcp_check_python_package",
             "description": "Check a Python package for updates, security issues and documentation for LLM and developer assistance",
-            "parameters": {
+            "schema": {
+                "type": "object",
                 "properties": {
                     "package_name": {
-                        "description": "Name of the Python package to check",
-                        "type": "string"
+                        "type": "string",
+                        "description": "Name of the Python package to check"
                     },
                     "version": {
-                        "description": "Current version (optional)",
-                        "type": "string"
+                        "type": "string",
+                        "description": "Optional version of the package. If not provided, the latest version will be used."
                     }
                 },
-                "type": "object"
+                "required": ["package_name"]
             }
         },
         {
             "name": "mcp_check_npm_package",
             "description": "Check an npm package for updates, security issues and documentation for LLM and developer assistance",
-            "parameters": {
+            "schema": {
+                "type": "object",
                 "properties": {
                     "package_name": {
-                        "description": "Name of the npm package to check",
-                        "type": "string"
+                        "type": "string",
+                        "description": "Name of the npm package to check"
                     },
                     "version": {
-                        "description": "Current version (optional)",
-                        "type": "string"
+                        "type": "string",
+                        "description": "Optional version of the package. If not provided, the latest version will be used."
                     }
                 },
-                "type": "object"
-            }
-        },
-        {
-            "name": "mcp_check_python_file",
-            "description": "Check a Python requirements.txt or pyproject.toml file for LLM and developer assistance",
-            "parameters": {
-                "properties": {
-                    "file_path": {
-                        "description": "Path to the requirements file",
-                        "type": "string"
-                    }
-                },
-                "type": "object"
-            }
-        },
-        {
-            "name": "mcp_check_npm_file",
-            "description": "Check a package.json file for LLM and developer assistance",
-            "parameters": {
-                "properties": {
-                    "file_path": {
-                        "description": "Path to the package.json file",
-                        "type": "string"
-                    }
-                },
-                "type": "object"
-            }
-        },
-        {
-            "name": "mcp_run_mypy",
-            "description": "Run mypy type checker on a Python file or directory for LLM and developer assistance",
-            "parameters": {
-                "properties": {
-                    "file_path": {
-                        "description": "Path to the Python file or directory",
-                        "type": "string"
-                    }
-                },
-                "type": "object"
-            }
-        },
-        {
-            "name": "mcp_run_npm_audit",
-            "description": "Run npm audit on a package.json file for LLM and developer assistance",
-            "parameters": {
-                "properties": {
-                    "file_path": {
-                        "description": "Path to the package.json file",
-                        "type": "string"
-                    }
-                },
-                "type": "object"
+                "required": ["package_name"]
             }
         }
+        # Note: File checking tools temporarily disabled pending refactor
     ]
     
     return {
@@ -160,13 +109,22 @@ async def list_tools(request: Request) -> Dict[str, Any]:
     }
 
 
+# Global reference to SSE transport for strategic event broadcasting
+sse_transport = None
+
+def set_sse_transport(transport: Any) -> None:
+    """Set SSE transport reference with strategic precision."""
+    global sse_transport
+    sse_transport = transport
+    logger.info("SSE transport reference established with unwavering precision")
+
 @router.post("/mcp/call_tool", response_class=OrjsonResponse)
-async def call_tool(
-    request: Request, 
-    dependency_checker: DependencyChecker = Depends(get_dependency_checker)
-) -> Dict[str, Any]:
+async def call_tool(request: Request) -> Dict[str, Any]:
     """Call a tool with strategic precision."""
-    data = await request.json()
+    try:
+        data = await request.json()
+    except:
+        data = {}
     request_id = data.get("id", str(uuid.uuid4()))
     tool_name = data.get("name")
     parameters = data.get("parameters", {})
@@ -187,7 +145,7 @@ async def call_tool(
             if not package_name:
                 raise McpError(ErrorCode.INVALID_PARAMS, "Missing package_name parameter")
             
-            result = await dependency_checker.check_python_package(package_name, version)
+            result = await check_python_package(package_name, version)
         
         elif tool_name == "mcp_check_npm_package":
             package_name = parameters.get("package_name")
@@ -196,35 +154,13 @@ async def call_tool(
             if not package_name:
                 raise McpError(ErrorCode.INVALID_PARAMS, "Missing package_name parameter")
             
-            result = await dependency_checker.check_npm_package(package_name, version)
+            result = await check_npm_package(package_name, version)
         
-        elif tool_name == "mcp_check_python_file":
-            file_path = parameters.get("file_path")
-            if not file_path:
-                raise McpError(ErrorCode.INVALID_PARAMS, "Missing file_path parameter")
-            
-            result = await dependency_checker.check_python_file(file_path)
-        
-        elif tool_name == "mcp_check_npm_file":
-            file_path = parameters.get("file_path")
-            if not file_path:
-                raise McpError(ErrorCode.INVALID_PARAMS, "Missing file_path parameter")
-            
-            result = await dependency_checker.check_npm_file(file_path)
-        
-        elif tool_name == "mcp_run_mypy":
-            file_path = parameters.get("file_path")
-            if not file_path:
-                raise McpError(ErrorCode.INVALID_PARAMS, "Missing file_path parameter")
-            
-            result = await dependency_checker.run_mypy(file_path)
-        
-        elif tool_name == "mcp_run_npm_audit":
-            file_path = parameters.get("file_path")
-            if not file_path:
-                raise McpError(ErrorCode.INVALID_PARAMS, "Missing file_path parameter")
-            
-            result = await dependency_checker.run_npm_audit(file_path)
+        # Note: File checking tools temporarily disabled pending refactor
+        # elif tool_name == "mcp_check_python_file":
+        # elif tool_name == "mcp_check_npm_file":
+        # elif tool_name == "mcp_run_mypy":
+        # elif tool_name == "mcp_run_npm_audit":
         
         else:
             raise McpError(
@@ -232,10 +168,27 @@ async def call_tool(
                 f"Tool not found: {tool_name}"
             )
         
-        return {
+        response = {
+            "jsonrpc": "2.0",
             "id": request_id,
             "result": result
         }
+        
+        # Broadcast event with strategic precision if SSE transport is available
+        global sse_transport
+        if sse_transport:
+            event = {
+                "type": "tool_result",
+                "data": {
+                    "name": tool_name,
+                    "result": result
+                }
+            }
+            # Use asyncio.create_task to avoid blocking
+            asyncio.create_task(sse_transport.broadcast(event))
+            logger.debug(f"Event broadcast initiated for tool {tool_name}")
+        
+        return response
     except McpError as e:
         logger.error(f"MCP error: {e.code} - {e.message}")
         return {

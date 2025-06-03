@@ -1,0 +1,11 @@
+{
+  "name": "versade",
+  "description": "Versatile dependency analysis and MCP server",
+  "entry": "versade",
+  "version": "1.0.0",
+  "author": "Versade Team",
+  "homepage": "https://github.com/versade/versade",
+  "repository": "https://github.com/versade/versade",
+  "keywords": ["mcp", "dependency", "package", "version", "security", "llm"],
+  "python_requires": ">=3.12"
+} 

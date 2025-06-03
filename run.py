@@ -1,20 +1,17 @@
 #!/usr/bin/env python3
 """
-Entry point for Versade package version and documentation finder.
-Provides simple server startup for the MCP interface.
+Versade MCP Server Entry Point
+Simple script to run the Versade MCP server in various modes.
 """
 
-import os
 import sys
-import uvicorn
+import os
 
-# Add src to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "src"))
+# Add src to path for development
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
 
-# Import port configuration
-from versade.__main__ import port
+from versade.server import mcp
 
-# Run application
 if __name__ == "__main__":
-    print(f"Starting Versade on port {port}")
-    uvicorn.run("versade.__main__:app", host="0.0.0.0", port=port, reload=True)
+    # Run the MCP server
+    mcp.run()
